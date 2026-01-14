@@ -1,68 +1,21 @@
 {
-  "name": "MirApp - بانک MB روسیه",
+  "name": "MirApp",
   "short_name": "MirApp",
-  "description": "اپلیکیشن همراه MirApp با قابلیت‌های بانکی و اقتصادی پیشرفته",
+  "description": "اپلیکیشن بانکی MB Bank",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a3d2f",
   "theme_color": "#0a3d2f",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/2784/2784459.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "https://cdn-icons-png.flaticon.com/512/2784/2784459.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["finance", "business", "productivity"],
-  "lang": "fa",
-  "dir": "rtl",
-  "scope": "/",
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "shortcuts": [
-    {
-      "name": "گزارش اقتصادی",
-      "short_name": "گزارش",
-      "description": "مشاهده نرخ‌های اقتصادی",
-      "url": "/#report",
-      "icons": [
-        {
-          "src": "https://cdn-icons-png.flaticon.com/512/3135/3135756.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "هوش مصنوعی",
-      "short_name": "AI",
-      "description": "چت با هوش مصنوعی DeepSeek",
-      "url": "/#ai",
-      "icons": [
-        {
-          "src": "https://cdn-icons-png.flaticon.com/512/3094/3094975.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "ماشین حساب",
-      "short_name": "Calc",
-      "description": "ماشین حساب پیشرفته",
-      "url": "/#calculator",
-      "icons": [
-        {
-          "src": "https://cdn-icons-png.flaticon.com/512/3126/3126687.png",
-          "sizes": "96x96"
-        }
-      ]
+      "type": "image/png"
     }
   ]
 }
