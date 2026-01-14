@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirApp - بانک MB روسیه</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a3d2f">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2784/2784459.png">
+    
+    <!-- کتابخانه تبدیل تاریخ شمسی -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@latest/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@latest/dist/persian-date.fa.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- هدر با نام برنامه -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="app-title-container">
+                    <h1 class="app-main-title">MirApp</h1>
+                </div>
+                
+                <!-- انتخاب زبان -->
+                <div class="language-selector">
+                    <select id="languageSelect" class="language-dropdown">
+                        <option value="fa">فارسی 🇮🇷</option>
+                        <option value="en">English 🇺🇸</option>
+                        <option value="ru">Русский 🇷🇺</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- ردیف تاریخ و ساعت -->
+            <div class="datetime-row">
+                <div class="date-column">
+                    <div class="hijri-date" id="hijriDate">در حال بارگذاری...</div>
+                    <div class="gregorian-date" id="gregorianDate">در حال بارگذاری...</div>
+                </div>
+                <div class="time-column">
+                    <div class="digital-clock" id="digitalClock">--:--</div>
+                    <div class="weather-brief" id="weatherBrief">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span id="currentTemp">--°C</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- شبکه دکمه‌های اصلی (مربع شکل) -->
+        <div class="main-grid square-grid">
+            <!-- اینترنت بانک -->
+            <a href="https://ibank.mbbru.ru:1443/web_banking/protected/welcome.jsf" target="_blank" class="square-btn link-btn">
+                <div class="square-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <span class="square-text" data-i18n="internetBank">اینترنت بانک</span>
+            </a>
+
+            <!-- نرخ روبل/ریال -->
+            <a href="https://www.mbbru.ru/fizicheskim-litsam/mb-rial/" target="_blank" class="square-btn link-btn">
+                <div class="square-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <span class="square-text" data-i18n="rialRate">نرخ روبل/ریال</span>
+            </a>
+
+            <!-- نرخ CB روسیه -->
+            <button class="square-btn" id="reportBtn">
+                <div class="square-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span class="square-text" data-i18n="cbrRates">نرخ CB روسیه</span>
+            </button>
+
+            <!-- اخبار CB روسیه -->
+            <button class="square-btn" id="newsBtn">
+                <div class="square-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <span class="square-text" data-i18n="cbrNews">اخبار CB روسیه</span>
+            </button>
+
+            <!-- وضعیت جوی -->
+            <button class="square-btn" id="weatherBtn">
+                <div class="square-icon">
+                    <i class="fas fa-cloud-sun"></i>
+                </div>
+                <span class="square-text" data-i18n="weather">وضعیت جوی</span>
+            </button>
+
+            <!-- هوش مصنوعی -->
+            <button class="square-btn" id="aiBtn">
+                <div class="square-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span class="square-text" data-i18n="aiAssistant">هوش مصنوعی</span>
+            </button>
+
+            <!-- مترجم -->
+            <button class="square-btn" id="translatorBtn">
+                <div class="square-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <span class="square-text" data-i18n="translator">مترجم</span>
+            </button>
+
+            <!-- شعب بانک -->
+            <a href="https://www.mbbru.ru/o-banke/" target="_blank" class="square-btn link-btn">
+                <div class="square-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <span class="square-text" data-i18n="bankBranches">شعب بانک</span>
+            </a>
+
+            <!-- ارتباط با ما (منوی آبشاری) -->
+            <div class="dropdown-container square-btn">
+                <button class="square-btn dropdown-btn" id="contactBtn">
+                    <div class="square-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <span class="square-text" data-i18n="contactUs">ارتباط با ما</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu hidden" id="contactMenu">
+                    <a href="tel:+78005000751" class="dropdown-item">
+                        <i class="fas fa-phone"></i>
+                        <span data-i18n="callExperts">تماس با کارشناسان</span>
+                    </a>
+                    <a href="mailto:info@mbbru.ru" class="dropdown-item">
+                        <i class="fas fa-envelope"></i>
+                        <span data-i18n="sendEmail">ارسال ایمیل</span>
+                    </a>
+                    <a href="https://t.me/mbbru_ru" target="_blank" class="dropdown-item">
+                        <i class="fab fa-telegram"></i>
+                        <span>کانال تلگرام بانک</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- تنظیمات -->
+            <button class="square-btn" id="settingsBtn">
+                <div class="square-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span class="square-text" data-i18n="settings">تنظیمات</span>
+            </button>
+
+            <!-- ماشین حساب -->
+            <button class="square-btn" id="calculatorBtn">
+                <div class="square-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <span class="square-text" data-i18n="calculator">ماشین حساب</span>
+            </button>
+        </div>
+
+        <!-- پنل نرخ CB روسیه -->
+        <div class="panel-container hidden" id="reportPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromReport">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-chart-line"></i> <span data-i18n="cbrRates">نرخ بانک مرکزی روسیه</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="report-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="reportDate">دریافت اطلاعات زنده...</span>
+                </div>
+                
+                <div class="refresh-button-container">
+                    <button class="refresh-btn" id="refreshCBR">
+                        <i class="fas fa-sync-alt"></i>
+                        <span data-i18n="refresh">بروزرسانی اطلاعات</span>
+                    </button>
+                </div>
+                
+                <div class="cbr-rates" id="cbrRates">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span data-i18n="loadingCBR">در حال دریافت اطلاعات زنده از بانک مرکزی روسیه...</span>
+                    </div>
+                </div>
+                
+                <div class="source-info">
+                    <i class="fas fa-info-circle"></i>
+                    <p><span data-i18n="source">منبع</span>: بانک مرکزی روسیه (cbr.ru) - <span data-i18n="lastUpdate">آخرین بروزرسانی</span>: <span id="lastUpdateTime">در حال دریافت...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل اخبار CB روسیه -->
+        <div class="panel-container hidden" id="newsPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromNews">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-newspaper"></i> <span data-i18n="cbrNews">اخبار بانک مرکزی روسیه</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="refresh-button-container">
+                    <button class="refresh-btn" id="refreshNews">
+                        <i class="fas fa-sync-alt"></i>
+                        <span data-i18n="refresh">بروزرسانی اخبار</span>
+                    </button>
+                </div>
+                <div class="news-container" id="newsContainer">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span data-i18n="loadingNews">در حال دریافت اخبار زنده...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل وضعیت جوی -->
+        <div class="panel-container hidden" id="weatherPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromWeather">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-cloud-sun"></i> <span data-i18n="weather">وضعیت جوی</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="refresh-button-container">
+                    <button class="refresh-btn" id="refreshWeather">
+                        <i class="fas fa-sync-alt"></i>
+                        <span data-i18n="refresh">بروزرسانی وضعیت هوا</span>
+                    </button>
+                </div>
+                <div class="weather-content" id="weatherContent">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span data-i18n="loadingWeather">در حال دریافت اطلاعات زنده وضعیت هوا...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل هوش مصنوعی -->
+        <div class="panel-container hidden" id="aiPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromAI">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-robot"></i> <span data-i18n="aiAssistant">هوش مصنوعی DeepSeek</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="ai-description">
+                    <p data-i18n="aiDescription">دستیار هوش مصنوعی DeepSeek برای پاسخگویی به تمام سوالات شما آماده است. هر سوالی دارید بپرسید!</p>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-messages" id="aiChatMessages">
+                        <div class="message bot">
+                            <div class="message-content">
+                                <i class="fas fa-robot"></i>
+                                <div>
+                                    <p data-i18n="aiWelcome">سلام! من DeepSeek هستم، دستیار هوش مصنوعی شما. چطور می‌توانم کمک‌تان کنم؟</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <textarea 
+                            id="aiInput" 
+                            placeholder="سوال خود را اینجا بنویسید..." 
+                            data-i18n-placeholder="aiPlaceholder"
+                            rows="3"
+                        ></textarea>
+                        <button class="send-btn" id="sendAI">
+                            <i class="fas fa-paper-plane"></i>
+                            <span data-i18n="send">ارسال</span>
+                        </button>
+                    </div>
+                    
+                    <div class="chat-examples">
+                        <p data-i18n="exampleQuestions">سوالات نمونه:</p>
+                        <div class="example-buttons">
+                            <button class="example-btn" data-question="نرخ دلار امروز چقدر است؟">
+                                <span data-i18n="example1">نرخ دلار امروز چقدر است؟</span>
+                            </button>
+                            <button class="example-btn" data-question="آخرین اخبار اقتصادی را بگو">
+                                <span data-i18n="example2">آخرین اخبار اقتصادی را بگو</span>
+                            </button>
+                            <button class="example-btn" data-question="پیش بینی وضعیت اقتصادی روسیه">
+                                <span data-i18n="example3">پیش‌بینی وضعیت اقتصادی روسیه</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل مترجم -->
+        <div class="panel-container hidden" id="translatorPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromTranslator">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-language"></i> <span data-i18n="translator">مترجم هوشمند</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="translator-description">
+                    <p data-i18n="translatorDescription">متن خود را وارد کنید و زبان مقصد را انتخاب نمایید. مترجم هوشمند به صورت خودکار زبان مبدأ را تشخیص می‌دهد.</p>
+                </div>
+                
+                <div class="translator-container">
+                    <div class="input-section">
+                        <textarea 
+                            id="translateInput" 
+                            placeholder="متن مورد نظر برای ترجمه را وارد کنید..." 
+                            data-i18n-placeholder="translatePlaceholder"
+                            rows="5"
+                        ></textarea>
+                        
+                        <div class="language-selection">
+                            <div class="lang-group">
+                                <label data-i18n="targetLanguage">زبان مقصد:</label>
+                                <select id="targetLang" class="lang-select">
+                                    <option value="fa">فارسی</option>
+                                    <option value="en">English</option>
+                                    <option value="ru">Русский</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="translate-btn" id="translateBtn">
+                            <i class="fas fa-language"></i>
+                            <span data-i18n="translate">ترجمه</span>
+                        </button>
+                    </div>
+                    
+                    <div class="output-section">
+                        <div class="output-header">
+                            <span data-i18n="translationResult">نتیجه ترجمه:</span>
+                            <button class="copy-btn" id="copyTranslation">
+                                <i class="far fa-copy"></i>
+                                <span data-i18n="copy">کپی</span>
+                            </button>
+                        </div>
+                        <div class="translated-text" id="translatedText">
+                            <p data-i18n="translationPlaceholder">نتیجه ترجمه در اینجا نمایش داده می‌شود...</p>
+                        </div>
+                        
+                        <div class="translation-info" id="translationInfo">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="translationInfo">زبان مبدأ به صورت خودکار تشخیص داده شد.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="translation-examples">
+                    <p data-i18n="translationExamples">نمونه‌های ترجمه:</p>
+                    <div class="example-grid">
+                        <button class="text-example" data-text="Hello, how are you?">
+                            Hello, how are you?
+                        </button>
+                        <button class="text-example" data-text="Сколько стоит доллар сегодня?">
+                            Сколько стоит доллар сегодня?
+                        </button>
+                        <button class="text-example" data-text="اطلاعات حساب خود را می‌خواهم">
+                            اطلاعات حساب خود را می‌خواهم
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل ماشین حساب -->
+        <div class="panel-container hidden" id="calculatorPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromCalculator">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-calculator"></i> <span data-i18n="calculator">ماشین حساب</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="calculator-container">
+                    <div class="calculator-display">
+                        <input type="text" id="calcDisplay" readonly value="0">
+                    </div>
+                    
+                    <div class="calculator-buttons">
+                        <button class="calc-btn operator" data-action="clear">C</button>
+                        <button class="calc-btn operator" data-action="backspace">⌫</button>
+                        <button class="calc-btn operator" data-action="percentage">%</button>
+                        <button class="calc-btn operator" data-action="divide">÷</button>
+                        
+                        <button class="calc-btn" data-number="7">7</button>
+                        <button class="calc-btn" data-number="8">8</button>
+                        <button class="calc-btn" data-number="9">9</button>
+                        <button class="calc-btn operator" data-action="multiply">×</button>
+                        
+                        <button class="calc-btn" data-number="4">4</button>
+                        <button class="calc-btn" data-number="5">5</button>
+                        <button class="calc-btn" data-number="6">6</button>
+                        <button class="calc-btn operator" data-action="subtract">-</button>
+                        
+                        <button class="calc-btn" data-number="1">1</button>
+                        <button class="calc-btn" data-number="2">2</button>
+                        <button class="calc-btn" data-number="3">3</button>
+                        <button class="calc-btn operator" data-action="add">+</button>
+                        
+                        <button class="calc-btn double" data-number="0">0</button>
+                        <button class="calc-btn" data-action="decimal">.</button>
+                        <button class="calc-btn equals" data-action="equals">=</button>
+                    </div>
+                    
+                    <div class="calculator-features">
+                        <button class="feature-btn" id="currencyConvert">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>تبدیل ارز</span>
+                        </button>
+                        <button class="feature-btn" id="calcHistory">
+                            <i class="fas fa-history"></i>
+                            <span>تاریخچه</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنل تنظیمات -->
+        <div class="panel-container hidden" id="settingsPanel">
+            <div class="panel-header">
+                <button class="back-btn" id="backFromSettings">
+                    <i class="fas fa-arrow-right"></i>
+                    <span data-i18n="back">بازگشت</span>
+                </button>
+                <h2><i class="fas fa-cog"></i> <span data-i18n="settings">تنظیمات برنامه</span></h2>
+            </div>
+            <div class="panel-content">
+                <div class="app-info-card">
+                    <h3><i class="fas fa-info-circle"></i> <span data-i18n="aboutApp">درباره برنامه</span></h3>
+                    <div class="info-item">
+                        <strong data-i18n="developer">توسعه‌دهنده:</strong> Adb
+                    </div>
+                    <div class="info-item">
+                        <strong data-i18n="version">نسخه:</strong> 0326
+                    </div>
+                    <div class="info-item">
+                        <strong data-i18n="lastUpdate">آخرین بروزرسانی:</strong> <span id="currentAppDate">در حال بارگذاری...</span>
+                    </div>
+                    
+                    <div class="features-list">
+                        <h4><i class="fas fa-star"></i> <span data-i18n="features">ویژگی‌های برنامه:</span></h4>
+                        <ul>
+                            <li data-i18n="feature1">خدمات بانکی و اطلاعات زنده</li>
+                            <li data-i18n="feature2">اخبار اقتصادی روز از CBR</li>
+                            <li data-i18n="feature3">هوش مصنوعی DeepSeek</li>
+                            <li data-i18n="feature4">مترجم هوشمند سه زبانه</li>
+                            <li data-i18n="feature5">وضعیت آب و هوا به صورت زنده</li>
+                            <li data-i18n="feature6">ماشین حساب پیشرفته</li>
+                            <li data-i18n="feature7">اعلان‌های Push برای اخبار جدید</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <h4><i class="fas fa-headset"></i> <span data-i18n="support">پشتیبانی:</span></h4>
+                        <p>MB Bank روسیه</p>
+                        <p>
+                            <span class="support-label">تلفن:</span>
+                            <span class="support-value ltr">+7 800 500-07-51</span>
+                        </p>
+                        <p>
+                            <span class="support-label">ایمیل:</span>
+                            <span class="support-value ltr">info@mbbru.ru</span>
+                        </p>
+                        <p>
+                            <span class="support-label">تلگرام:</span>
+                            <span class="support-value ltr">@mbbru_ru</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="settings-actions">
+                    <button class="settings-btn" id="clearCacheBtn">
+                        <i class="fas fa-trash"></i> <span data-i18n="clearCache">پاک کردن حافظه موقت</span>
+                    </button>
+                    <button class="settings-btn primary" id="refreshDataBtn">
+                        <i class="fas fa-sync-alt"></i> <span data-i18n="refreshAll">بروزرسانی همه داده‌ها</span>
+                    </button>
+                </div>
+                
+                <div class="auto-refresh-setting">
+                    <h4><i class="fas fa-sync"></i> <span data-i18n="autoRefresh">بروزرسانی خودکار</span></h4>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoRefreshToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span data-i18n="autoRefreshDesc">بروزرسانی خودکار هر 10 دقیقه</span>
+                    </div>
+                </div>
+                
+                <div class="notification-setting">
+                    <h4><i class="fas fa-bell"></i> <span data-i18n="notifications">اعلان‌ها</span></h4>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notificationToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span data-i18n="notificationDesc">اعلان‌های اخبار جدید و تغییرات نرخ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay برای منوهای آبشاری -->
+    <div class="overlay hidden" id="overlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
